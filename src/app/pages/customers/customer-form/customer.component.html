@@ -1,0 +1,152 @@
+<form [formGroup]="mainForm" (submit)="onSubmit()">
+    <div class="form-group">
+      <label for="customerID">ID</label>
+      <input
+      type="text"
+      class="form-control"
+      id="customerID"
+      formControlName="customerID"
+      placeholder="e.g 123456789">
+      <span class="error invalid-feedback" *ngIf="customerID?.pattern">Numbers only!</span>
+      <span class="error invalid-feedback" *ngIf="customerID?.required">You must provide ID</span>
+      <span class="error invalid-feedback" *ngIf="customerID?.minlength && !customerID?.pattern">ID is too short</span>
+    </div>
+    <div class="form-group">
+      <label for="firstName">First Name</label>
+      <input
+      type="text"
+      class="form-control"
+      id="firstName"
+      name="firstName"
+      formControlName="firstName"
+      placeholder="First Name">
+    <span class="error invalid-feedback" *ngIf="firstName?.pattern">Hebrew or English letters only</span>
+    <span class="error invalid-feedback" *ngIf="firstName?.minlength">At least 2 characters</span>
+    <span class="error invalid-feedback" *ngIf="firstName?.required">You must provide name</span>
+    </div>
+    <div class="form-group">
+      <label for="inputLastName">Last Name</label>
+      <input
+      type="text"
+      class="form-control"
+      id="inputLastName"
+      name="lastName"
+      formControlName="lastName"
+      placeholder="Last Name">
+      <span class="error invalid-feedback" *ngIf="lastName?.pattern">Hebrew or English letters only</span>
+      <span class="error invalid-feedback" *ngIf="lastName?.minlength">At least 2 characters</span>
+      <span class="error invalid-feedback" *ngIf="lastName?.required">You must provide last name</span>
+    </div>
+    <div class="form-group">
+      <label for="inputEmail">Email</label>
+      <input
+      type="text"
+      class="form-control"
+      id="inputEmail"
+      name="Email"
+      formControlName="email"
+      placeholder="example@domain.com">
+      <span class="error invalid-feedback" *ngIf="email?.pattern">Its not look like email address</span>
+      <span class="error invalid-feedback" *ngIf="email?.required">We need email address</span>
+    </div>
+    <div class="form-group">
+      <label for="inputPhone">Phone number</label>
+      <input
+      type="text"
+      class="form-control"
+      id="inputPhone"
+      name="phone"
+      formControlName="phone"
+      placeholder="Phone number">
+      <span class="error invalid-feedback" *ngIf="phone?.pattern">Its not look like phone - digits only</span>
+    </div>
+    <div class="form-group">
+      <!-- NEED TO CHANGE TO GROUP -->
+      <label for="contact">Extra Phones </label>
+      <div class="input-group">
+        <input
+        type="text"
+        class="form-control"
+        id="contact"
+        name="extraContact"
+        formControlName="extraContact"
+        placeholder="Contact name" >
+        <input
+        type="text"
+        class="form-control"
+        id="contact"
+        name="extraPhone"
+        formControlName="extraPhone"
+        placeholder="Contact phone" >
+      </div>
+      <span class="error invalid-feedback" *ngIf="extraContact?.pattern">Letters only</span>
+      <span class="error invalid-feedback" *ngIf="extraPhone?.pattern">Its not look like phone - digits only</span>
+    </div>
+    <br>
+    <h5>Location</h5>
+    <div style="margin-left: 10%;">
+      <div class="form-group">
+        <label for="inputStreet">Street</label>
+        <input
+        type="text"
+        class="form-control"
+        id="inputStreet"
+        name="street"
+        formControlName="street"
+        placeholder="Street address and number">
+        <span class="error invalid-feedback" *ngIf="street?.minlength">It's look too short</span>
+        <span class="error invalid-feedback" *ngIf="street?.required">We need it</span>
+      </div>
+      <div class="form-group">
+        <label for="inputCity">City</label>
+        <input
+        type="text"
+        class="form-control"
+        id="inputCity"
+        name="city"
+        formControlName="city"
+        placeholder="City">
+        <span class="error invalid-feedback" *ngIf="city?.minlength && !city?.pattern">It's look too short</span>
+        <span class="error invalid-feedback" *ngIf="city?.required">We need it</span>
+        <span class="error invalid-feedback" *ngIf="city?.pattern">Its need to be letter only</span>
+      </div>
+      <div class="form-group">
+        <label for="inputNotes">Notes</label>
+        <input
+        type="text"
+        class="form-control"
+        id="inputNotes"
+        name="notes"
+        formControlName="notes"
+        placeholder="Anything we need to know">
+      </div>
+      <div class="form-group">
+        <label for="inputZip">Zipcode</label>
+        <input
+        type="text"
+        class="form-control"
+        id="inputZip"
+        name="zipcode"
+        formControlName="zipcode"
+        placeholder="Zipcode">
+        <span class="error invalid-feedback" *ngIf="zipcode?.minlength && !zipcode?.pattern">It's look too short</span>
+        <span class="error invalid-feedback" *ngIf="zipcode?.required">We need it</span>
+        <span class="error invalid-feedback" *ngIf="zipcode?.pattern">Its need to be numbers only</span>
+      </div>
+    </div>
+    <!-- Explain why the submit button is not enable -->
+    <div class="callout callout-danger" style="margin-top: 10%;" *ngIf="formInvalid && !cusmterAdded">
+      <h5>You still have problem in the form, look for red boxs</h5>
+    </div>
+    <div class="callout callout-danger" style="margin-top: 10%;" *ngIf="inErr">
+      <h5>You still have problem in the form, look for red boxs</h5>
+    </div>
+    <div class="callout callout-success" style="margin-top: 10%;" *ngIf="formInvalid && cusmterAdded">
+      <h5>Great, the customer had been added !</h5>
+    </div>
+    <div class="callout callout-success" style="margin-top: 10%;" *ngIf="customerEdited">
+      <h5>Update was successful</h5>
+    </div>
+    <br>
+    <button type="submit" class="btn btn-block btn-primary" [disabled]="!formIsValid()">{{ this.buttonText }}</button>
+</form>

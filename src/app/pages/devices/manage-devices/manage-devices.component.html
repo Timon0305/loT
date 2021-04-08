@@ -1,0 +1,161 @@
+<ng-template #reviewDevice let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">Review Devices</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <!-- This modal will summary all the customer details + property + devices -->
+  <div class="modal-body">
+    <h5>Let's summary all the details before saving..</h5><br>
+    <dl class="row">
+      <dt class="col-sm-4">Device number: </dt>
+      <dd class="col-sm-8">{{currentDevice?.simNumber}}</dd>
+      <dt class="col-sm-4">Customer Name:</dt>
+      <dd class="col-sm-8">{{currentDevice?.customer?.firstName}} {{currentDevice?.customer?.lastName}}</dd>
+      <dt class="col-sm-4">Customer ID:</dt>
+      <dd class="col-sm-8">{{currentDevice?.customer?.customerID}}</dd>
+      <dt class="col-sm-4">C. Phone:</dt>
+      <dd class="col-sm-8">{{currentDevice?.customer?.phone}}</dd>
+      <dt class="col-sm-4">C. Email:</dt>
+      <dd class="col-sm-8">{{currentDevice?.customer?.email}}</dd>
+      <dt class="col-sm-4">Property name:</dt>
+      <dd class="col-sm-8">{{currentDevice?.property?.name}}</dd>
+      <dt class="col-sm-4">Property type:</dt>
+      <dd class="col-sm-8">{{currentDevice?.property?.type}}</dd>
+      <dt class="col-sm-4">Property address:</dt>
+      <dd class="col-sm-8">{{currentDevice?.property?.location?.street}}, {{currentDevice?.property?.location?.city}}, {{currentDevice?.property?.location?.zipcode}}</dd>
+      <dt class="col-sm-4">Property notes:</dt>
+      <dd class="col-sm-8">{{currentDevice?.property?.location?.notes}}</dd>
+    </dl>
+    <label *ngIf="currentDevice?.property?.contacts">Property contacts:</label>
+    <dl class="row" *ngFor="let contact of currentDevice?.property?.contacts; let i = index">
+      <dt class="col-sm-5">{{i}}# {{contact.name}}</dt>
+      <dd class="col-sm-7" >{{contact.phone}}</dd>
+    </dl>
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>
+              #
+            </th>
+            <th>
+              Name
+            </th>
+            <th>
+              Zone
+            </th>
+            <th>
+              Type
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let device of currentDevice!.devices; let z = index">
+            <th>
+              {{z}}
+            </th>
+            <td>
+              {{device.name}}
+            </td>
+            <td>
+              {{device.zone}}
+            </td>
+            <td>
+              {{device.deviceType}}
+            </td>
+          </tr>
+      </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="modal-footer justify-content-between">
+    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+    <button type="button" class="btn btn-primary" (click)="submit()">Save changes</button>
+  </div>
+</ng-template>
+<div class="container">
+  <div class="row">
+      <div class="col"></div>
+      <div class="col-6">
+          <!-- general form elements -->
+          <div class="card card-primary">
+              <div class="card-header">
+                  <h3 class="card-title">Manage Devices</h3>
+              </div>
+              <!-- /.card-header -->
+              <!-- form start -->
+              <div style="margin: 3%;">
+                  <div class="overlay-wrapper">
+                      <div class="overlay" *ngIf="showLoading">
+                          <i class="fas fa-3x fa-sync-alt fa-spin"></i>
+                          <div class="text-bold pt-2">Loading...</div>
+                      </div>
+                      <div class="form-group" *ngIf="!currentDevice">
+                          <label>Find the Device</label>
+                          <input type="text" class="form-control" placeholder="Start type phone number" matInput [formControl]="selectedDevice" [matAutocomplete]="auto" />
+                          <mat-autocomplete #auto="matAutocomplete">
+                              <mat-option *ngFor="let option of filteredOptions | async" [value]="option.simNumber" (click)="setDevice(option)">
+                                  {{option.simNumber}}
+                              </mat-option>
+                          </mat-autocomplete>
+                      </div>
+                      <div class="alert alert-danger" *ngIf="errorManager.isErr">
+                          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                          <h5><i class="icon fas fa-ban"></i>Oh no !</h5>
+                          {{errorManager.errInfo}}
+                      </div>
+                      <div *ngIf="currentDevice">
+                          <dl class="row">
+                              <dt class="col-sm-4">SIM Number</dt>
+                              <dd class="col-sm-8">{{currentDevice.simNumber}}</dd>
+                              <dt class="col-sm-4">Customer Name</dt>
+                              <dd class="col-sm-8">{{currentDevice.customer.firstName}} {{currentDevice.customer.lastName}}</dd>
+                              <dt class="col-sm-4">Property address</dt>
+                              <dd class="col-sm-8">{{currentDevice.property.location.street}}, {{currentDevice.property.location.city}}, {{currentDevice.property.location.zipcode}}</dd>
+                          </dl>
+                      </div>
+
+                      <div class="form-group">
+
+                          Number of Devices: <label>{{deviceCount}}</label>
+                          <div class="input-group mb-3">
+                            <span></span>
+                              <button class="btn btn-outline-danger" (click)="removeOneDevice()"><i class="fas fa-minus"></i></button>
+                              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                              <input type="range" class="form-control" (change)="onChangeDevices()" [(ngModel)]="deviceCount" min="0" max="99" />
+                              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                              <button class="btn btn-outline-success" (click)="addOneDevice()"><i class="fas fa-plus"></i></button>
+                          </div>
+                      </div>
+                      <form [formGroup]="dynamicForm" (ngSubmit)="reviewDeviceModal(reviewDevice)">
+                          <div *ngFor="let device of deviceFormGroups; let i = index" class="list-group list-group-flush">
+                              <label>Device #{{i + 1}}</label>
+                              <div [formGroup]="device" class="form-row">
+                                  <div class="input-group mb-3">
+                                      <input type="text" formControlName="name" class="form-control" placeholder="where is it ?"/>
+                                      <input type="number" formControlName="zone" class="form-control col-sm-2" placeholder="1" min=0/>
+                                      <select class="form-control col-sm-3" formControlName="deviceType" style="border-top-right-radius: 0.25rem;border-bottom-right-radius: 0.25rem;">
+                                          <option value="" disabled></option>
+                                          <option *ngFor="let thisType of deviceTypes" value="{{thisType.value}}">{{thisType.title}}</option>
+                                      </select>
+                                  </div>
+                              </div>
+                          </div>
+                          <button class="btn btn-block btn-primary btn-sm" type="submit">Review📋</button>
+                      </form>
+                      <br>
+                      <div class="alert alert-success alert-dismissible" *ngIf="submitted">
+                        <button type="button" class="close">&times;</button>
+                        <h5><i class="icon fas fa-check"></i> Great</h5>
+                        The devices was saved, and now match with the panel.
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <!-- /.card -->
+      </div>
+      <div class="col"></div>
+  </div>
+</div>

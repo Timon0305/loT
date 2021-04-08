@@ -1,0 +1,4 @@
+{
+  "name":"IoT",
+  "baseURL":"http://localhost:8080/api/"
+}

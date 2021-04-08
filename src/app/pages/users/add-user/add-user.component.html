@@ -1,0 +1,85 @@
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">Are you sure about that ?</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-success" (click)="sendForm()">Yes, go ahead</button>
+    <button type="button" class="btn btn-danger" (click)="modal.close('Close click')">Nope, wait !</button>
+  </div>
+</ng-template>
+
+<div class="container">
+    <div class="row">
+        <div class="col"></div>
+        <div class="col-6">
+            <!-- general form elements -->
+            <div class="card card-primary card-outline">
+                <div class="card-header">
+                    <h3 class="card-title">New User</h3>
+                </div>
+                <!-- /.card-header -->
+                <!-- form start -->
+                <div style="margin: 3%;">
+                  <form  [formGroup]="userForm">
+                    <div class="form-group">
+                      <div class="input-group mb-3">
+                        <input type="text" class="form-control" placeholder="Full Name" formControlName="fullName">
+                        <div class="input-group-append">
+                          <div class="input-group-text">
+                            <span class="fas fa-user"></span>
+                          </div>
+                        </div>
+                      </div>
+                  </div>
+                    <div class="input-group mb-3">
+                      <input type="email" class="form-control" placeholder="example@domain.com" formControlName="email">
+                      <div class="input-group-append">
+                        <div class="input-group-text">
+                          <span class="fas fa-envelope"></span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="input-group mb-3">
+                      <input type="tel" class="form-control" formControlName="phone">
+                      <div class="input-group-append">
+                        <div class="input-group-text">
+                          <span class="fas fa-phone"></span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="input-group mb-3">
+                      <select class="custom-select" placement="bottom" ngbTooltip="Role" formControlName="role">
+                          <option *ngFor="let thisRole of userRoles"
+                            value="{{thisRole.role}}">{{thisRole.title}}</option>
+                      </select>
+                    </div>
+                    <div class="input-group mb-3">
+                      <input type="password" class="form-control" placeholder="Password" formControlName="password">
+                      <div class="input-group-append">
+                        <div class="input-group-text">
+                          <span class="fas fa-lock"></span>
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+
+                  <p class="text-danger" *ngIf="formStatus.status=='INVALID' && formStatus.dirty">Please check the errors:</p>
+                  <span class="error invalid-feedback" *ngIf="nameStatus?.required">Name is required</span>
+                  <span class="error invalid-feedback" *ngIf="emailStatus?.required">Email is required</span>
+                  <span class="error invalid-feedback" *ngIf="emailStatus?.pattern">Email is not valid</span>
+                  <span class="error invalid-feedback" *ngIf="phoneStatus?.required">Phone is required</span>
+                  <span class="error invalid-feedback" *ngIf="passStatus?.required">Must choose password for login</span>
+                  <button type="button" class="btn btn-block btn-primary" (click)="doubleCheck(content)" [disabled]="formStatus.status == 'INVALID'">Add user</button>
+                  <br>
+                  <ngb-alert type='success' *ngIf="resultStats.status=='OK'">User successfully created</ngb-alert>
+                  <ngb-alert type='danger' *ngIf="resultStats.status=='ERR'">Err, details:<br>{{resultStats.info}}</ngb-alert>
+                </div>
+            </div>
+            <!-- /.card -->
+        </div>
+        <div class="col"></div>
+    </div>
+  </div>

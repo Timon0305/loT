@@ -1,0 +1,68 @@
+<div class="container">
+  <div class="row">
+      <div class="col"></div>
+      <div class="col-6">
+          <!-- general form elements -->
+          <div class="card card-primary">
+              <div class="card-header">
+                  <h3 class="card-title">New Device wizard</h3>
+              </div>
+              <!-- /.card-header -->
+              <!-- form start -->
+              <div style="margin: 3%;">
+                  <!-- Show customer details -->
+                  <dl class="row" *ngIf="customer._id">
+                      <dt class="col-sm-2">Customer</dt>
+                      <dd class="col-sm-9">{{customer.firstName}} {{customer.lastName}}</dd>
+                      <dt class="col-sm-2">Property</dt>
+                      <dd class="col-sm-9">{{property.location?.street}}, {{property.location?.city}}, {{property.location?.zipcode}}</dd>
+                  </dl>
+                  <!-- Find property for match -->
+                  <div class="form-group">
+                      <label>Property</label>
+                      <input type="text" class="form-control" placeholder="Start type phone number" matInput [formControl]="selectedProperty" [matAutocomplete]="auto" />
+                      <mat-autocomplete #auto="matAutocomplete">
+                          <mat-option *ngFor="let option of filteredOptions | async" [value]="option.name" (click)="setProperty(option)">
+                              {{option.name}}
+                          </mat-option>
+                      </mat-autocomplete>
+                  </div>
+                  <!-- Activate the SIM -->
+                  <label for="simNumber">SIM number</label>
+                  <div class="input-group">
+                      <input type="text" class="form-control" [formControl]="simNumber" placeholder="Type the phone number of the SIM" />
+                      <span class="input-group-append">
+                          <button
+                              type="button"
+                              (click)="initSim()"
+                              class="btn"
+                              [ngClass]="{
+                                            'btn-primary':!isSimInit,
+                                            'btn-success':isSimInit,
+                                            'btn-danger':isSimErr
+                                          }"
+                              [disabled]="isSimInit || showLoading"
+                          >
+                              Initialize!
+                          </button>
+                      </span>
+                  </div>
+                  <br />
+                  <div>
+                      <div class="alert alert-success" role="alert" [hidden]="!isSimInit">
+                          <i class="icon fas fa-check"></i>
+                          Great, the installation was completed
+                      </div>
+                  </div>
+                  <div class="row" *ngIf="showLoading">
+                      <div class="col"></div>
+                      <div class="col"><img src="/assets/dist/img/loading.gif" /></div>
+                      <div class="col"></div>
+                  </div>
+              </div>
+          </div>
+          <!-- /.card -->
+      </div>
+      <div class="col"></div>
+  </div>
+</div>

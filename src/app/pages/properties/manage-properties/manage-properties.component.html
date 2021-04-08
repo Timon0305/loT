@@ -1,0 +1,82 @@
+<ng-template #editPropertyModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">Property Edit </h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <property-form [property]=selectedProperty [formOptions]=formOptions ></property-form>
+  </div>
+</ng-template>
+
+<ng-template #deletePropertyModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">property Deletion  <i class="fas fa-exclamation-circle"></i></h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    Are you sure you want to delete this property ?
+  </div>
+  <div class="modal-footer justify-content-between">
+    <button type="button" class="btn btn-danger" (click)="deleteThisProperty(selectedProperty)">Delete this property!</button>
+    <button type="button" class="btn btn-default" (click)="modal.close('Close click')">Close</button>
+  </div>
+</ng-template>
+<!-- Main content -->
+<section class="content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">DataTable with default features</h3>
+          </div>
+          <!-- /.card-header -->
+          <div class="card-body">
+            <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-striped table-hover">
+              <thead>
+              <tr>
+                <th>Name</th>
+                <th>Owner</th>
+                <th>City</th>
+                <th>Added on</th>
+                <th>Edit</th>
+                <th>Delete</th>
+              </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let property of properties" >
+                  <td>{{ property.name }}</td>
+                  <td>{{ property.owner.firstName }}  {{ property.owner.lastName }}</td>
+                  <td>{{ property.location.city }}</td>
+                  <td>{{ property.dateAdded | date:'dd/MM/yyyy'}}</td>
+                  <td (click)="editModal(editPropertyModal,property)"><div class="text-center"><button class="btn btn-warning"><i class="fas fa-user-edit"></i></button></div></td>
+                  <td (click)="deleteModal(deletePropertyModal,property)"><div class="text-center"><button class="btn btn-danger"><i class="fas fa-user-times"></i></button></div></td>
+                </tr>
+              </tbody>
+              <tfoot>
+              <tr>
+                <th>Name</th>
+                <th>Owner</th>
+                <th>City</th>
+                <th>Added on</th>
+                <th>Edit</th>
+                <th>Delete</th>
+              </tr>
+              </tfoot>
+            </table>
+          </div>
+          <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+      </div>
+      <!-- /.col -->
+    </div>
+    <!-- /.row -->
+  </div>
+  <!-- /.container-fluid -->
+</section>
+<!-- /.content -->

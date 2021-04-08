@@ -1,0 +1,132 @@
+<form [formGroup]="mainForm" (submit)="onSubmit()">
+  <div class="form-group" *ngIf="showCustomer">
+    <label>Customer</label>
+    <input
+    type="text"
+    class="form-control"
+    placeholder="Start type phone number"
+    matInput [formControl]="owner"
+    [matAutocomplete]="auto">
+    <mat-autocomplete #auto="matAutocomplete">
+      <mat-option *ngFor="let option of filteredOptions | async" [value]="option.firstName+' '+option.lastName" (click)="setCustomer(option)">
+        {{option.firstName}}  {{option.lastName}}
+      </mat-option>
+    </mat-autocomplete>
+  </div>
+  <div class="form-group">
+    <label for="name">Name or description</label>
+    <input
+    type="text"
+    class="form-control"
+    id="name"
+    formControlName="name"
+    placeholder="e.g Main house/ Grandmother house/ The house in rehovot..">
+    <span class="error invalid-feedback" *ngIf="name?.required">You must provide name</span>
+    <span class="error invalid-feedback" *ngIf="name?.minlength">It's not enough</span>
+  </div>
+  <div class="form-group">
+    <label>Property Type</label>
+    <select
+    class="form-control"
+    formControlName="type">
+      <option value="apartment">Apartment</option>
+      <option value="ground-house">Ground house</option>
+      <option value="duplex">Duplex</option>
+      <option value="storeroom">Storeroom</option>
+    </select>
+    <span class="error invalid-feedback" *ngIf="type?.required">You must select one</span>
+  </div>
+  <div class="form-group">
+    <!-- NEED TO CHANGE TO GROUP -->
+    <label for="contact">Property Contact</label> -  Use customer phone ?
+    <input
+    (change)="useCustomerPhone()"
+      type="checkbox">
+    <div class="input-group">
+      <input
+      type="text"
+      class="form-control"
+      id="contact"
+      name="contactName"
+      formControlName="contactName"
+      placeholder="Contact name" >
+      <input
+      type="text"
+      class="form-control"
+      id="contact"
+      name="contactPhone"
+      formControlName="contactPhone"
+      placeholder="Contact phone" >
+    </div>
+    <span class="error invalid-feedback" *ngIf="contactName?.pattern">Letters only</span>
+    <span class="error invalid-feedback" *ngIf="contactPhone?.pattern">Its not look like phone - digits only</span>
+  </div>
+  <br>
+  <h5>Location</h5>
+  Use customer location ?
+  <input
+  (change)="useCustomerLocation()"
+  type="checkbox">
+  <div style="margin-left: 10%;">
+    <div class="form-group">
+      <label for="inputStreet">Street</label>
+      <input
+      type="text"
+      class="form-control"
+      id="inputStreet"
+      name="street"
+      formControlName="street"
+      placeholder="Street address and number">
+      <span class="error invalid-feedback" *ngIf="street?.minlength">It's look too short</span>
+      <span class="error invalid-feedback" *ngIf="street?.required">We need it</span>
+    </div>
+    <div class="form-group">
+      <label for="inputCity">City</label>
+      <input
+      type="text"
+      class="form-control"
+      id="inputCity"
+      name="city"
+      formControlName="city"
+      placeholder="City">
+      <span class="error invalid-feedback" *ngIf="city?.minlength && !city?.pattern">It's look too short</span>
+      <span class="error invalid-feedback" *ngIf="city?.required">We need it</span>
+      <span class="error invalid-feedback" *ngIf="city?.pattern">Its need to be letter only</span>
+    </div>
+    <div class="form-group">
+      <label for="inputNotes">Notes</label>
+      <input
+      type="text"
+      class="form-control"
+      id="inputNotes"
+      name="notes"
+      formControlName="notes"
+      placeholder="Anything we need to know">
+    </div>
+    <div class="form-group">
+      <label for="inputZip">Zipcode</label>
+      <input
+      type="text"
+      class="form-control"
+      id="inputZip"
+      name="zipcode"
+      formControlName="zipcode"
+      placeholder="Zipcode">
+      <span class="error invalid-feedback" *ngIf="zipcode?.minlength && !zipcode?.pattern">It's look too short</span>
+      <span class="error invalid-feedback" *ngIf="zipcode?.required">We need it</span>
+      <span class="error invalid-feedback" *ngIf="zipcode?.pattern">Its need to be numbers only</span>
+    </div>
+  </div>
+  <!-- Explain why the submit button is not enable -->
+  <div class="callout callout-danger" style="margin-top: 10%;" *ngIf="formInvalid && !propertyAdded">
+    <h5>You still have problem in the form, look for red boxs</h5>
+  </div>
+  <div class="callout callout-danger" style="margin-top: 10%;" *ngIf="inErr">
+    <h5>You have some errors</h5>
+  </div>
+  <div class="callout callout-success" style="margin-top: 10%;" *ngIf="isPropertyAdded">
+    <h5>Update was successful</h5>
+  </div>
+  <br>
+  <button type="submit" class="btn btn-block btn-primary" [disabled]="!formIsValid()">{{ this.buttonText }}</button>
+</form>

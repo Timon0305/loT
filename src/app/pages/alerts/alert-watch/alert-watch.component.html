@@ -1,0 +1,191 @@
+<ng-template #viewAlert let-modal>
+  <div class="overlay-wrapper">
+      <div class="overlay" *ngIf="modalLoading">
+          <i class="fas fa-3x fa-sync-alt fa-spin"></i>
+          <div class="text-bold pt-2">Loading...</div>
+      </div>
+      <div class="modal-header">
+          <h3 class="modal-title">Alert ID: <i>{{selectedAlert?._id}}</i></h3>
+          <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+              <span aria-hidden="true">&times;</span>
+          </button>
+      </div>
+      <div class="modal-body">
+          <h4>Alert Details<i class="fas fa-exclamation-triangle"></i></h4>
+
+          <dl *ngIf="selectedAlert" class="row">
+              <dt class="col-sm-4">Alert ID</dt>
+              <dd class="col-sm-8">{{selectedAlert._id}}</dd>
+              <dt class="col-sm-4">Status</dt>
+              <dd class="col-sm-8">{{selectedAlert.status}}</dd>
+              <dt class="col-sm-4">Time</dt>
+              <dd class="col-sm-8">{{selectedAlert.timestamp | date: 'dd/MM/yyyy H:mm'}}</dd>
+              <dt class="col-sm-4">Kind</dt>
+              <dd class="col-sm-8">{{selectedAlert.kind}}</dd>
+              <dt class="col-sm-4">Origin</dt>
+              <dd class="col-sm-8">{{selectedAlert.origin}}</dd>
+              <dt class="col-sm-4" *ngIf="selectedAlert.fatherPanel">Location By Zone</dt>
+              <dd class="col-sm-8" *ngIf="selectedAlert.fatherPanel">{{selectedAlert.fatherPanel.devices[selectedAlert.zone].name}}</dd>
+          </dl>
+          <h4>Contacts to call</h4>
+          <dl class="row" *ngFor="let contact of remoteDevice?.property?.contacts">
+              <dt class="col-sm-4">{{contact.name}}</dt>
+              <dd class="col-sm-8">{{contact.phone}}</dd>
+          </dl>
+          <br />
+          <div *ngIf="remoteDevice">
+              <h4>Panel Details</h4>
+              <dl class="row">
+                  <dt class="col-sm-4">Panel ID</dt>
+                  <dd class="col-sm-8">{{remoteDevice._id}}</dd>
+                  <dt class="col-sm-4">Init Date</dt>
+                  <dd class="col-sm-8">{{remoteDevice.init_date | date: 'dd/MM/yyyy H:mm'}}</dd>
+                  <dt class="col-sm-4">Sim Number</dt>
+                  <dd class="col-sm-8">{{remoteDevice.simNumber}}</dd>
+                  <dt class="col-sm-4">Device Count</dt>
+                  <dd class="col-sm-8">{{remoteDevice.deviceCount}}</dd>
+              </dl>
+              <br />
+              <h4>Customer Details</h4>
+              <dl class="row">
+                  <dt class="col-sm-4">Customer Name</dt>
+                  <dd class="col-sm-8">{{remoteDevice.customer.firstName}} {{remoteDevice.customer.lastName}}</dd>
+                  <dt class="col-sm-4">Customer phone</dt>
+                  <dd class="col-sm-8">{{remoteDevice.customer.phone}}</dd>
+                  <dt class="col-sm-4">Customer email</dt>
+                  <dd class="col-sm-8">{{remoteDevice.customer.email}}</dd>
+                  <dt class="col-sm-4">Customer ID</dt>
+                  <dd class="col-sm-8">{{remoteDevice.customer.customerID}}</dd>
+                  <dt class="col-sm-4">Customer Join Date</dt>
+                  <dd class="col-sm-8">{{remoteDevice.customer.dateJoin| date: 'dd/MM/yyyy'}}</dd>
+                  <dt class="col-sm-4">Customre System ID</dt>
+                  <dd class="col-sm-8">{{remoteDevice.customer._id}}</dd>
+              </dl>
+              <br />
+              <h4>Property Details</h4>
+              <dl class="row">
+                  <dt class="col-sm-4">Property Name</dt>
+                  <dd class="col-sm-8">{{remoteDevice.property.name}}</dd>
+                  <dt class="col-sm-4">Property Type</dt>
+                  <dd class="col-sm-8">{{remoteDevice.property.type}}</dd>
+                  <dt class="col-sm-4">Property Added at</dt>
+                  <dd class="col-sm-8">{{remoteDevice.property.dateAdded | date: 'dd/MM/yyyy'}}</dd>
+                  <dt class="col-sm-4">Property ID</dt>
+                  <dd class="col-sm-8">{{remoteDevice.property._id}}</dd>
+              </dl>
+          </div>
+      </div>
+      <div class="modal-footer">
+        <div class="input-group mb-3">
+          <input type="text" class="form-control" [(ngModel)]="commentStatus"/>
+          <select class="custom-select" style="width:15px;" [(ngModel)]="selectedStatus">
+            <option *ngFor="let status of statusOpt" value="{{status.value}}">{{status.title}}</option>
+          </select>
+          <div class="input-group-prepend">
+            <!-- Add style to button without edit css -->
+            <button type="button" class="btn btn-warning" style="border-top-right-radius:0.25rem;border-bottom-right-radius:0.25rem" (click)="changeStatus()">Submit</button>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col"></div>
+        <div class="col-8">
+          <!-- Info box about status change request -->
+          <div class="alert alert-success" *ngIf="changeStatusReq">
+            {{changeStatusReq}}
+          </div>
+        </div>
+        <div class="col"></div>
+      </div>
+      <br>
+  </div>
+</ng-template>
+
+
+
+<section class="content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card card-primary card-outline">
+          <div class="card-body">
+            <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-hover dataTable">
+              <thead>
+                <tr>
+                  <th>Status</th>
+                  <th>Time</th>
+                  <th>Kind</th>
+                  <th>Zone</th>
+                  <th>Location</th>
+                  <th>Origin</th>
+                </tr>
+              </thead>
+              <tbody *ngIf="alertsList?.length != 0">
+                <tr *ngFor="let alert of alertsList" (click)="openAlertModal(viewAlert,alert)">
+                  <td>
+                    <span class="badge" [ngClass]="{
+                      'bg-danger':alert.status=='new',
+                      'bg-warning':alert.status=='work',
+                      'bg-success':alert.status=='dismiss'
+                    }">
+                    &nbsp;{{ getStatusTitle(alert.status) }}&nbsp;
+                  </span>
+                  </td>
+                  <td><div class="text-center">{{ alert.timestamp | date: 'dd/MM/yyyy H:mm'}}</div></td>
+                  <td *ngIf="alert.kind =='fire'">Fire <i class="fas fa-fire-alt"></i></td>
+                  <td *ngIf="alert.kind == 'co'">CO <i class="fas fa-tint"></i></td>
+                  <td *ngIf="alert.kind == 'gas'">Gas <i class="fas fa-biohazard"></i></td>
+                  <td>{{ alert.zone }}</td>
+                  <td>{{ alert.fatherPanel!.devices[alert.zone].name }}</td>
+                  <td>{{ alert.origin }}</td>
+                </tr>
+              </tbody>
+              <tbody *ngIf="alertsList?.length == 0">
+                <tr>
+                  <td colspan="3" class="no-data-available">No data!</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th><div class="input-group input-group-sm">
+                    <select class="custom-select">
+                      <option value="">All</option>
+                      <option *ngFor="let status of statusOpt" value="{{status.value}}">{{status.title}}</option>
+                    </select>
+                  </div></th>
+                  <th><div class="input-group input-group-sm">
+                    <!-- Add tooltip -->
+                    <input class="form-control" type="date" [(ngModel)]="dateRange.startDate">
+                    <div class="input-group-append">
+                      <button class="btn btn-default" type="button"><i class="fa fa-calendar"></i></button>
+                    </div>
+                    <input class="form-control" type="date" [(ngModel)]="dateRange.endDate">
+                    <div class="input-group-append">
+                      <button class="btn btn-default" type="button"><i class="fa fa-calendar"></i></button>
+                    </div>
+                  </div></th>
+                  <th><div class="input-group input-group-sm">
+                    <select class="custom-select">
+                      <option value=''>All</option>
+                      <option *ngFor="let device of devicesTypes" value="{{device.value}}">{{device.title}}</option>
+                    </select>
+                  </div></th>
+                  <th><div class="input-group input-group-sm"><input name="zone" type="number" class="form-control"/></div></th>
+                  <th><div class="input-group input-group-sm"><input name="location" type="text" class="form-control"/></div></th>
+                  <th><div class="input-group input-group-sm"><input name="origin" type="text" class="form-control"/></div></th>
+                </tr>
+              </tfoot>
+            </table>
+
+          </div>
+          <!-- /.card -->
+        </div>
+      </div>
+      <!-- /.col -->
+    </div>
+    <!-- ./row -->
+  </div>
+  <!-- /.container-fluid -->
+
+</section>
+<!-- /.content -->
