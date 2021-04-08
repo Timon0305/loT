@@ -5,6 +5,7 @@ import {first} from "rxjs/operators";
 import {Router} from "@angular/router";
 import {Store} from "@ngxs/store";
 import {GetRole} from "../store/nav/nav.actions";
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
     selector: 'app-app-login',
@@ -24,6 +25,7 @@ export class AppLoginComponent implements OnInit {
         private usersApi: UsersApiService,
         private _router: Router,
         private store: Store,
+        private toastr: ToastrService
     ) {
     }
 
@@ -35,6 +37,7 @@ export class AppLoginComponent implements OnInit {
             .pipe(first())
             .subscribe(res => {
                 if (res['status'] === 'OK') {
+                    this.toastr.success('Success');
                     this.role = localStorage.getItem('role');
                     this.store.dispatch(new GetRole(this.role));
                     if (this.role === 'tech') {
@@ -42,6 +45,8 @@ export class AppLoginComponent implements OnInit {
                     } else {
                         this._router.navigate([''])
                     }
+                } else {
+                    this.toastr.error(res['info'])
                 }
             })
     }

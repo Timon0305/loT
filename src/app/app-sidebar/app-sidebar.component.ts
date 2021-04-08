@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {NavState} from "../store/nav/nav.state";
 import {Select} from "@ngxs/store";
 import {Observable} from "rxjs";
+import {Router} from "@angular/router";
 
 @Component({
     selector: 'app-sidebar',
@@ -21,7 +22,9 @@ export class AppSidebarComponent implements OnInit {
 
     role: any;
 
-    constructor() {
+    constructor(
+        private _router: Router,
+    ) {
     }
 
     ngOnInit(): void {
@@ -29,6 +32,11 @@ export class AppSidebarComponent implements OnInit {
             this.role = res;
         });
         this.role = localStorage.getItem('role')
+    }
+
+    logout = () => {
+        localStorage.clear();
+        window.location.href = '/'
     }
 
 }
