@@ -37,14 +37,14 @@ const routes: Routes = [
         canActivate: [AuthGuard],
         children: [
             {
-                path: '',
+                path: 'dashboard',
                 component: PageDashboardComponent,
                 data: {
                     title: 'Dashboard'
                 }
             },
             {
-                path: 'index',
+                path: 'dashboard',
                 component: PageDashboardComponent,
                 data: {
                     title: 'Dashboard'

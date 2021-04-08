@@ -37,11 +37,20 @@ export class UsersApiService {
     return this.http.post(this.baseURL+loginPath, userDetails)
         .pipe(map((res: any) => {
             if(res['status'] == 'OK'){
-                localStorage.setItem('token',res.token);
-                this.currentUserSubject.next(res['token']);
+                this.parseJWT(res.token);
+                this.currentUserSubject.next(res.token);
             }
             return res;
         }))
+  }
 
+  parseJWT = (token: string) => {
+      let base64Url = token.split('.')[1];
+      let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      let jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
+      localStorage.setItem('token',token);
+      localStorage.setItem('role', JSON.parse(jsonPayload)['role'])
   }
 }
