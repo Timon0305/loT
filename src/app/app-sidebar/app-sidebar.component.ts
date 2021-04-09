@@ -19,11 +19,9 @@ export class AppSidebarComponent implements OnInit {
         properties: true,
         devices: true
     };
-
     role: any;
 
     constructor(
-        private _router: Router,
     ) {
     }
 
