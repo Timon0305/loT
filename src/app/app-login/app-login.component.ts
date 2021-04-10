@@ -43,7 +43,8 @@ export class AppLoginComponent implements OnInit {
                     if (this.role === 'tech') {
                         this._router.navigate(['add-device'])
                     } else {
-                        this._router.navigate([''])
+                        this._router.navigate(['']);
+                        window.location.href = '/'
                     }
                 } else {
                     this.toastr.error(res['info'])
