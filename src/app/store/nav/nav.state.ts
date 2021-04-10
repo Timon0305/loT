@@ -30,6 +30,6 @@ export class NavState {
         let state = getState();
         setState({
             ...state, role: payload
-        })
+        });
     }
 }

@@ -35,13 +35,13 @@
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
           <li class="nav-item has-treeview" *ngIf="role === 'admin' || role === 'view'">
-            <a routerLink="/dashboard" class="nav-link" routerLinkActive="active" >
+            <a routerLink="/dashboard" (click)="clickNav('dashboard')" [ngClass]="dashboardClass?'active':''" class="nav-link" >
               <i class="far fa-circle nav-icon"></i>
               <p>Dashboard</p>
             </a>
           </li>
           <li class="nav-item"  [ngClass]="{'menu-open':menu.alerts}" *ngIf="role === 'admin' || role === 'view'">
-            <a  class="nav-link">
+            <a  class="nav-link" (click)="clickNav('alerts')" [ngClass]="alertClass?'active':''">
               <i class="nav-icon fas fa-user-friends"></i>
               <p>
                 Alerts
@@ -50,7 +50,7 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item" routerLinkActive="active">
-                <a routerLink="/alert-watch" class="nav-link" routerLinkActive="active">
+                <a routerLink="/alert-watch" (click)="clickNav('alerts')" class="nav-link" routerLinkActive="active">
                   <i class="fas fa-user-plus nav-icon"></i>
                   <p>Alert watcher</p>
                 </a>
@@ -58,7 +58,7 @@
             </ul>
           </li>
           <li class="nav-item"  [ngClass]="{'menu-open':menu.customres}" *ngIf="role === 'admin' || role === 'view'">
-            <a  class="nav-link">
+            <a  class="nav-link" (click)="clickNav('customres')" [ngClass]="customerClass?'active':''">
               <i class="nav-icon fas fa-user-friends"></i>
               <p>
                 Customers
@@ -67,13 +67,13 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a routerLink="/new-customer" class="nav-link" routerLinkActive="active">
+                <a routerLink="/new-customer" (click)="clickNav('customres')" class="nav-link" routerLinkActive="active">
                   <i class="fas fa-user-plus nav-icon"></i>
                   <p>Add Customer</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a routerLink="/manage-customers" class="nav-link" routerLinkActive="active">
+                <a routerLink="/manage-customers" (click)="clickNav('customres')" class="nav-link" routerLinkActive="active">
                   <i class="fas fa-user-plus nav-icon"></i>
                   <p>Manage Customers</p>
                 </a>
@@ -81,7 +81,7 @@
             </ul>
           </li>
           <li class="nav-item" [ngClass]="{'menu-open':menu.properties}" *ngIf="role === 'admin' || role === 'view'">
-            <a  class="nav-link">
+            <a  class="nav-link" (click)="clickNav('property')" [ngClass]="propertyClass?'active':''">
               <i class="nav-icon fas fa-city"></i>
               <p>
                 Properties
@@ -90,7 +90,7 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a routerLink="/add-property" class="nav-link" routerLinkActive="active">
+                <a routerLink="/add-property" (click)="clickNav('property')" class="nav-link" routerLinkActive="active">
                   <i class="fas fa-clinic-medical nav-icon"></i>
                   <p>Add Property</p>
                 </a>
@@ -98,7 +98,7 @@
             </ul>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a routerLink="/manage-properties" class="nav-link" routerLinkActive="active">
+                <a routerLink="/manage-properties" (click)="clickNav('property')" class="nav-link" routerLinkActive="active">
                   <i class="fas fa-gopuram nav-icon"></i>
                   <p>Manage Properties</p>
                 </a>
@@ -106,7 +106,7 @@
             </ul>
           </li>
           <li class="nav-item" [ngClass]="{'menu-open':menu.devices}">
-            <a class="nav-link">
+            <a class="nav-link" (click)="clickNav('device')" [ngClass]="deviceClass?'active':''">
               <i class="nav-icon fas fa-laptop-house"></i>
               <p>
                 Devices
@@ -115,7 +115,7 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a routerLink="/add-device" class="nav-link" routerLinkActive="active">
+                <a routerLink="/add-device" (click)="clickNav('device')" class="nav-link" routerLinkActive="active">
                   <i class="fas fa-laptop-code nav-icon"></i>
                   <p>New Device</p>
                 </a>
@@ -123,7 +123,7 @@
             </ul>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a routerLink="/manage-devices" class="nav-link" routerLinkActive="active">
+                <a routerLink="/manage-devices" (click)="clickNav('device')" class="nav-link" routerLinkActive="active">
                   <i class="fas fa-list-ol nav-icon"></i>
                   <p>Manage Devices</p>
                 </a>
@@ -131,7 +131,7 @@
             </ul>
           </li>
           <li class="nav-item menu-open" *ngIf="role === 'admin'">
-            <a class="nav-link">
+            <a class="nav-link" (click)="clickNav('user')" [ngClass]="userClass?'active':''">
               <i class="nav-icon fas fa-laptop-house"></i>
               <p>
                 Users
@@ -140,17 +140,9 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a routerLink="/add-user" class="nav-link" routerLinkActive="active">
+                <a routerLink="/add-user" (click)="clickNav('user')" class="nav-link" routerLinkActive="active">
                   <i class="fas fa-laptop-code nav-icon"></i>
                   <p>New User</p>
-                </a>
-              </li>
-            </ul>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a routerLink="/manage-devices" class="nav-link" routerLinkActive="active">
-                  <i class="fas fa-list-ol nav-icon"></i>
-                  <p>Manage Devices</p>
                 </a>
               </li>
             </ul>
