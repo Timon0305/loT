@@ -37,8 +37,17 @@ module.exports = function (config) {
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
-    browsers: ['Chrome'],
+    browsers: ['Chrome', 'Firefox', 'FirefoxDeveloper', 'FirefoxAurora', 'FirefoxNightly'],
     singleRun: false,
-    restartOnFileChange: true
+    restartOnFileChange: true,
+      customLaunchers: {
+          FirefoxWithMyExtension: {
+              base: 'Firefox',
+              extensions: [
+                  path.resolve(__dirname, 'helpers/extensions/myCustomExt@suchandsuch.xpi'),
+                  path.resolve(__dirname, 'helpers/extensions/myOtherExt@soandso.xpi')
+              ]
+          }
+      }
   });
 };
